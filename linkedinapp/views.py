@@ -68,14 +68,8 @@ def list(request, skill):
     client = oauth.Client(consumer,token)
     headers = {'x-li-format':'json'}
     url = "https://api.linkedin.com/v1/people-search?keywords=" + skill
-    print url
     resp, content = client.request(url, "GET", headers=headers)
-    results = json.loads(content)
-    # without indexes
-    for result in results:
-        print result
-        
-    #html += results['people-search']
+    html += content
 
     return HttpResponse(html)
 
