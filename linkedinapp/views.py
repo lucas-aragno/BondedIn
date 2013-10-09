@@ -59,16 +59,26 @@ def home(request):
     return HttpResponse(html)
    
 @login_required
-def list(request, skill):
-    print skill
+def people_search(request, client, token, headers, skill):
+    url = "https://api.linkedin.com/v1/people-search?keywords=" + skill
+    result = client.request(url, "GET", headers=headers)
+    return result
 
+@login_required
+def company_search(request, client, token, headers, name):
+    url = "http://api.linkedin.com/v1/companies/universal-name=" + name + ":(name,locations)"
+    result = client.request(url, "GET", headers=headers)
+    return result
+
+@login_required
+def list(request, skill):
     now = datetime.datetime.now()
     html = "<html><body>"
     token = oauth.Token(request.user.get_profile().oauth_token,request.user.get_profile().oauth_secret)
     client = oauth.Client(consumer,token)
     headers = {'x-li-format':'json'}
-    url = "https://api.linkedin.com/v1/people-search?keywords=" + skill
-    resp, content = client.request(url, "GET", headers=headers)
+    resp,content = people_search(request, client, token, headers, skill)
+    #resp,content = company_search(request, client, token, headers, 'devspark')
     html += content
 
     return HttpResponse(html)
