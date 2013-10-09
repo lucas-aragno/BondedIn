@@ -59,6 +59,27 @@ def home(request):
     return HttpResponse(html)
    
 @login_required
+def list(request, skill):
+    print skill
+
+    now = datetime.datetime.now()
+    html = "<html><body>"
+    token = oauth.Token(request.user.get_profile().oauth_token,request.user.get_profile().oauth_secret)
+    client = oauth.Client(consumer,token)
+    headers = {'x-li-format':'json'}
+    url = "https://api.linkedin.com/v1/people-search?keywords=" + skill
+    print url
+    resp, content = client.request(url, "GET", headers=headers)
+    results = json.loads(content)
+    # without indexes
+    for result in results:
+        print result
+        
+    #html += results['people-search']
+
+    return HttpResponse(html)
+
+@login_required
 def oauth_logout(request):
     # Log a user out using Django's logout function and redirect them
     # back to the homepage.
