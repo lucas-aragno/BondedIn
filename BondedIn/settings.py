@@ -128,8 +128,8 @@ INSTALLED_APPS = (
 )
 
 AUTH_PROFILE_MODULE = 'linkedinapp.UserProfile'
-LINKEDIN_TOKEN='wFNJekVpDCJtRPFX812pQsJee-gt0zO4X5XmG6wcfSOSlLocxodAXNMbl0_hw3Vl'
-LINKEDIN_SECRET='daJDa6_8UcnGMw1yuq9TjoO_PMKukXMo8vEMo7Qv5J-G3SPgrAV0FqFCd0TNjQyG'
+LINKEDIN_TOKEN='ery914zg2tbg'
+LINKEDIN_SECRET='dcALw3wUR7Vqwp3m'
 LOGIN_URL='/login/'
 
 SESSION_SERIALIZER = 'django.contrib.sessions.serializers.JSONSerializer'
