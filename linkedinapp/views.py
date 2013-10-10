@@ -61,8 +61,7 @@ def home(request):
    
 @login_required
 def people_search(request, client, token, headers, skill):
-    #url = "https://api.linkedin.com/v1/people-search?keywords=" + skill
-    url = "https://api.linkedin.com/v1/people-search:(people:(first-name,last-name,picture-url,positions:(company:(name))))?keywords=" + skill
+    url = "https://api.linkedin.com/v1/people-search:(people:(first-name,last-name,picture-url,positions:(company:(name))))?country-code=ar&keywords=" + skill
     result = client.request(url, "GET", headers=headers)
     return result
 
@@ -101,6 +100,7 @@ def get_developers_by_location(location,profile,request,client,token,headers):
     for person in people:
         location = get_company_location(person, client, token, headers, request)
         if location != None:
+            del person['positions']
             person['location'] = location
             developer_list.append(person)
     return developer_list
