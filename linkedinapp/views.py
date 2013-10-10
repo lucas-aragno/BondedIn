@@ -3,6 +3,7 @@ import cgi
 import simplejson as json
 import datetime
 import re
+import urllib
 
 # Django
 from django.http import HttpResponse
@@ -60,7 +61,8 @@ def home(request):
    
 @login_required
 def people_search(request, client, token, headers, skill):
-    url = "https://api.linkedin.com/v1/people-search?keywords=" + skill
+    #url = "https://api.linkedin.com/v1/people-search?keywords=" + skill
+    url = "https://api.linkedin.com/v1/people-search:(people:(first-name,last-name,picture-url,positions:(company:(name))))?keywords=" + skill
     result = client.request(url, "GET", headers=headers)
     return result
 
@@ -70,6 +72,39 @@ def company_search(request, client, token, headers, name):
     result = client.request(url, "GET", headers=headers)
     return result
 
+def format_name(name):
+   name  = name.lower()
+   return name.replace(" ","-")
+
+def get_company_location(person, client, token, headers, request):
+    company_name = person['positions']['values'][0]['company']['name']
+    resp2,content = company_search(request, client, token, headers, format_name(company_name))
+    company = json.loads(content)
+
+    if 'locations' in company:
+        for location in company['locations']['values']:
+            #city = '{"location":' + location + '}'
+            if 'city' in location['address']:
+                #print location['address']['city']
+                return location['address']['city']
+
+    return None
+
+
+
+def get_developers_by_location(location,profile,request,client,token,headers):
+    locationList = location.split('-',1)
+    developer_list = []
+    #Busco location dentro de people
+    data = profile['people']
+    people = data['values']
+    for person in people:
+        location = get_company_location(person, client, token, headers, request)
+        if location != None:
+            person['location'] = location
+            developer_list.append(person)
+    return developer_list
+
 @login_required
 def list(request, skill):
     now = datetime.datetime.now()
@@ -78,8 +113,9 @@ def list(request, skill):
     client = oauth.Client(consumer,token)
     headers = {'x-li-format':'json'}
     resp,content = people_search(request, client, token, headers, skill)
-    #resp,content = company_search(request, client, token, headers, 'devspark')
-    html += content
+    profile = json.loads(content)
+    people = get_developers_by_location('tandil',profile,request,client,token,headers)
+    html += json.dumps(people)
 
     return HttpResponse(html)
 
