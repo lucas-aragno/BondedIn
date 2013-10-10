@@ -76,15 +76,16 @@ def format_name(name):
    return name.replace(" ","-")
 
 def get_company_location(person, client, token, headers, request):
+    # Se ignoran los person que no tienen positions o values
+    if ('positions' not in person) or ('values' not in person['positions']) :
+        return None
     company_name = person['positions']['values'][0]['company']['name']
     resp2,content = company_search(request, client, token, headers, format_name(company_name))
     company = json.loads(content)
 
     if 'locations' in company:
         for location in company['locations']['values']:
-            #city = '{"location":' + location + '}'
             if 'city' in location['address']:
-                #print location['address']['city']
                 return location['address']['city']
 
     return None
@@ -94,8 +95,13 @@ def get_company_location(person, client, token, headers, request):
 def get_developers_by_location(location,profile,request,client,token,headers):
     locationList = location.split('-',1)
     developer_list = []
-    #Busco location dentro de people
+    #Se retorna None si no hay datos de people
+    if 'people' not in profile:
+        return None
     data = profile['people']
+    #Se retorna None si no hay datos de values
+    if 'values' not in data:
+        return None
     people = data['values']
     for person in people:
         location = get_company_location(person, client, token, headers, request)
@@ -115,7 +121,8 @@ def list(request, skill):
     resp,content = people_search(request, client, token, headers, skill)
     profile = json.loads(content)
     people = get_developers_by_location('tandil',profile,request,client,token,headers)
-    html += json.dumps(people)
+    if people != None:
+        html += json.dumps(people)
 
     return HttpResponse(html)
 
