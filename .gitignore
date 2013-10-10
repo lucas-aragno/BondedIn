@@ -2,3 +2,4 @@
 ###################
 *.pyc
 linkedinapp/*.pyc
+.idea
