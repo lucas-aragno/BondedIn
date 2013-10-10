@@ -1,8 +1,9 @@
 #Instalacion de Modulos necesarios
-pip install requests
-pip install requests_oauthlib
-pip install python-linkedin
-pip install simplejson
+pip install requests , 
+pip install requests_oauthlib , 
+pip install oauth2 , 
+pip install python-linkedin , 
+pip install simplejson 
 
 
 # URL del listado:
