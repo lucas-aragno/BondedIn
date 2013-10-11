@@ -75,7 +75,7 @@ def format_name(name):
    name  = name.lower()
    return name.replace(" ","-")
 
-def get_company_location(person, client, token, headers, request):
+def get_company_location(person, city, client, token, headers, request):
     # Se ignoran los person que no tienen positions o values
     if ('positions' not in person) or ('values' not in person['positions']) :
         return None
@@ -83,10 +83,19 @@ def get_company_location(person, client, token, headers, request):
     resp2,content = company_search(request, client, token, headers, format_name(company_name))
     company = json.loads(content)
 
-    if 'locations' in company:
-        for location in company['locations']['values']:
-            if 'city' in location['address']:
-                return location['address']['city']
+    # Si la company no tiene location retorno false
+    if 'locations' not in company:
+        return None
+    
+    for location in company['locations']['values']:
+        # Si city no esta en location sigo con la prox location
+        if 'city' not in location['address']:
+            continue
+        # Si se especifica city y no es la que se encuentra en location sigo con la prox location
+        if (city != None) and (location['address']['city'] != city):
+            continue
+
+        return location['address']['city']
 
     return None
 
@@ -104,15 +113,15 @@ def get_developers_by_location(location,profile,request,client,token,headers):
         return None
     people = data['values']
     for person in people:
-        location = get_company_location(person, client, token, headers, request)
-        if location != None:
+        company_location = get_company_location(person, location, client, token, headers, request)
+        if company_location != None:
             del person['positions']
-            person['location'] = location
+            person['location'] = company_location
             developer_list.append(person)
     return developer_list
 
 @login_required
-def list(request, skill):
+def list(request, skill, location=None):
     now = datetime.datetime.now()
     html = "<html><body>"
     token = oauth.Token(request.user.get_profile().oauth_token,request.user.get_profile().oauth_secret)
@@ -120,7 +129,7 @@ def list(request, skill):
     headers = {'x-li-format':'json'}
     resp,content = people_search(request, client, token, headers, skill)
     profile = json.loads(content)
-    people = get_developers_by_location('tandil',profile,request,client,token,headers)
+    people = get_developers_by_location(location,profile,request,client,token,headers)
     if people != None:
         html += json.dumps(people)
 
