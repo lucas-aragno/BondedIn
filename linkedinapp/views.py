@@ -12,6 +12,7 @@ from django.http import HttpResponseRedirect
 from django.conf import settings
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
+from linkedinapp.models import *
 from django.contrib.auth.decorators import login_required
 
 # Project
@@ -48,7 +49,14 @@ def oauth_login(request):
 
 def test(request):
     country_list = Country.objects.using('Geo').all()
+    for country in country_list:
+        print country.name
+    province_list = Province.objects.using('Geo').all()
+    for province in province_list:
+        print province.name
     print country_list
+    html = "<html><body>"
+    return HttpResponse(html)
 
 @login_required
 def home(request):
