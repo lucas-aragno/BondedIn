@@ -13,6 +13,7 @@ from django.conf import settings
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
+from django.conf.urls.static import static
 
 # Project
 from linkedinapp.models import UserProfile
@@ -49,15 +50,16 @@ def oauth_login(request):
 @login_required
 def home(request):
     now = datetime.datetime.now()
-    html = "<html><body>"
+    
     token = oauth.Token(request.user.get_profile().oauth_token,request.user.get_profile().oauth_secret)
     client = oauth.Client(consumer,token)
     headers = {'x-li-format':'json'}
     url = "http://api.linkedin.com/v1/people/~:(id,first-name,last-name,headline)"
     resp, content = client.request(url, "GET", headers=headers)
-    profile = json.loads(content)
-    html += profile['firstName'] + " " + profile['lastName'] + "<br/>" + profile['headline']
-    return HttpResponse(html)
+    profile = json.loads(content)    
+    return render_to_response('index.html', {"firstName": profile['firstName'],"lastName": profile["lastName"],"headline": profile['headline']})
+
+
    
 @login_required
 def people_search(request, client, token, headers, skill):
@@ -92,8 +94,8 @@ def get_company_location(person, city, client, token, headers, request):
         if 'city' not in location['address']:
             continue
         # Si se especifica city y no es la que se encuentra en location sigo con la prox location
-        if (city != None) and (location['address']['city'] != city):
-            continue
+        #if (city != None) and (location['address']['city'] != city):
+            #continue
 
         return location['address']['city']
 

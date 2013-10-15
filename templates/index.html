@@ -1,40 +1,37 @@
+{% load staticfiles %}
 <!DOCTYPE html>
 <html>
 <head>
     <title>BondedIn</title>
-    <base href=""/>
-    <link rel="stylesheet" href="../resources/styles/common.css" type="text/css"/>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <base href="http://localhost:8000/"/>
+    <link rel="stylesheet" href="{% static 'styles/common.css' %}" type="text/css"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <!-- Bootstrap -->
-    <link href="../resources/bootstrap/css/bootstrap.min.css" rel="stylesheet" media="screen">
+    <link href="{% static 'bootstrap/css/bootstrap.min.css' %}" media="screen" />
 </head>
 <body>
     <div class="container">
         <h1>BondedIn</h1>
-        <form action="" method="POST">
+        <!--<form action="" method="POST">-->
 
             <div class="container" style="border: solid green 1px;">
                 <div class="center">
                     <div class="span3 tecno_filter">
                         <label class="label">Tecnología</label>
-                        <select>
-                            <option value="php">PHP</option>
-                            <option value="python">PYTHON</option>
-                            <option value=".net">.NET</option>
-                        </select>
+                        <input type="text" value="" />
                     </div>
 
                     <div class="span3" style="border: solid red 1px">
                         <label class="label">Provincia</label>
-                        <select>
-                            <option value="php">Buenos Aires</option>
-                            <option value="python">Córdoba</option>
-                            <option value=".net">Santa Cruz</option>
+                        <select id="location_select">
+                            <option value="1">Buenos Aires</option>
+                            <option value="2">Córdoba</option>
+                            <option value="3">Santa Cruz</option>
                         </select>
                     </div>
 
                     <div class="span1">
-                        <input type="submit" style="margin-top:26px;"/>
+                        <input type="button" id="search_btn" style="margin-top:26px;"/>
                     </div>
                 </div>
             </div>
@@ -42,32 +39,6 @@
 
                 <div class="container">
                     <div class="span2 box">Hola</div>
-                    <div class="span2 box">Hola</div>
-                    <div class="span2 box">Hola</div>
-                    <div class="span2 box">Hola</div>
-                    <div class="span2 box">Hola</div>
-                    <div class="span2 box">Hola</div>
-                    <div class="span2 box">Hola</div>
-                    <div class="span2 box">Hola</div>
-                    <div class="span2 box">Hola</div>
-                    <div class="span2 box">Hola</div>
-                    <div class="span2 box">Hola</div>
-                    <div class="span2 box">Hola</div>
-                    <div class="span2 box">Hola</div>
-                    <div class="span2 box">Hola</div>
-                    <div class="span2 box">Hola</div>
-                    <div class="span2 box">Hola</div>
-                    <div class="span2 box">Hola</div>
-                    <div class="span2 box">Hola</div>
-                    <div class="span2 box">Hola</div>
-                    <div class="span2 box">Hola</div>
-                    <div class="span2 box">Hola</div>
-                    <div class="span2 box">Hola</div>
-                    <div class="span2 box">Hola</div>
-                    <div class="span2 box">Hola</div>
-                    <div class="span2 box">Hola</div>
-
-
 
                 </div>
                 <div class="pagination">
@@ -79,10 +50,16 @@
                 </div>
 
             </div>
-        </form>
+        <!--</form>-->
     </div>
 
-<script src="../resources/js/jquery-1.10.2.min.js"></script>
-<script src="../resources/bootstrap/js/bootstrap.min.js"></script>
+<script src="{% static 'js/jquery-1.10.2.min.js' %}"></script>
+<script src="{% static 'bootstrap/js/bootstrap.min.js' %}"></script>
+<script type="text/javascript">
+    $('#search_btn').click(function(){
+       alert($('#technology_select').val());
+       alert($('#location_select').val());
+    });
+</script>
 </body>
 </html>

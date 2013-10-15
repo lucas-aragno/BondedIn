@@ -1,4 +1,6 @@
 from django.conf.urls import patterns, include, url
+from django.conf import settings
+from django.conf.urls.static import static
 
 # Uncomment the next two lines to enable the admin:
 # from django.contrib import admin
@@ -22,4 +24,4 @@ urlpatterns = patterns('',
     url(r'^login/authenticated/?$', 'linkedinapp.views.oauth_authenticated'),
     url(r'^$','linkedinapp.views.home'),
     url(r'^list/(?P<skill>\S+)/(?P<location>\S*)/$','linkedinapp.views.list'),
-)
+) + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
