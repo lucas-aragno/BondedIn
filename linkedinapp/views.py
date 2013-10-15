@@ -14,6 +14,8 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
 from linkedinapp.models import *
 from django.contrib.auth.decorators import login_required
+from django.core import serializers
+
 
 # Project
 from linkedinapp.models import UserProfile
@@ -57,6 +59,21 @@ def test(request):
     print country_list
     html = "<html><body>"
     return HttpResponse(html)
+
+def province_list(request, country):
+    if country == '':
+        country = 1
+    provinces = Province.objects.using('Geo').all().filter(id_country = country)
+    result = serializers.serialize('json',provinces)
+    return HttpResponse(result)
+
+def city_list(request, province):
+    if province == '':
+        province = 1
+
+    cities = City.objects.using('Geo').all().filter(id_province = province)
+    result = serializers.serialize('json', cities)
+    return HttpResponse(result)
 
 @login_required
 def home(request):
@@ -134,17 +151,17 @@ def get_developers_by_location(location,profile,request,client,token,headers):
     return developer_list
 
 @login_required
-def list(request, skill, location=None):
+def list(request, skill, city=None):
     now = datetime.datetime.now()
     html = "<html><body>"
-    token = oauth.Token(request.user.get_profile().oauth_token,request.user.get_profile().oauth_secret)
+    token = oauth.Token(request.user.get_profile().oauth_token, request.user.get_profile().oauth_secret)
     client = oauth.Client(consumer,token)
     headers = {'x-li-format':'json'}
     resp,content = people_search(request, client, token, headers, skill)
     profile = json.loads(content)
-    if location == '':
-        location = None
-    people = get_developers_by_location(location,profile,request,client,token,headers)
+    if city == '':
+        city = None
+    people = get_developers_by_location(city, profile, request, client, token, headers)
     if people != None:
         html += json.dumps(people)
 
