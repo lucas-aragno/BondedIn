@@ -46,6 +46,10 @@ def oauth_login(request):
     print url
     return HttpResponseRedirect(url)
 
+def test(request):
+    country_list = Country.objects.using('Geo').all()
+    print country_list
+
 @login_required
 def home(request):
     now = datetime.datetime.now()
@@ -92,7 +96,7 @@ def get_company_location(person, city, client, token, headers, request):
         if 'city' not in location['address']:
             continue
         # Si se especifica city y no es la que se encuentra en location sigo con la prox location
-        if (city != None) and (location['address']['city'] != city):
+        if (city != None) and (location['address']['city'].lower() != city.lower()):
             continue
 
         return location['address']['city']
@@ -102,7 +106,8 @@ def get_company_location(person, city, client, token, headers, request):
 
 
 def get_developers_by_location(location,profile,request,client,token,headers):
-    locationList = location.split('-',1)
+    #locationList = location.split('-',1)
+    locationList = location
     developer_list = []
     #Se retorna None si no hay datos de people
     if 'people' not in profile:
@@ -129,6 +134,8 @@ def list(request, skill, location=None):
     headers = {'x-li-format':'json'}
     resp,content = people_search(request, client, token, headers, skill)
     profile = json.loads(content)
+    if location == '':
+        location = None
     people = get_developers_by_location(location,profile,request,client,token,headers)
     if people != None:
         html += json.dumps(people)
