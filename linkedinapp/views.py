@@ -29,7 +29,8 @@ request_token_url = 'https://api.linkedin.com/uas/oauth/requestToken'
 access_token_url = 'https://api.linkedin.com/uas/oauth/accessToken'
 authenticate_url = 'https://www.linkedin.com/uas/oauth/authenticate'
 
-def oauth_login(request):
+def get_oauth_url(request):
+    print "algo"
     # Step 0. Get the current hostname and port for the callback
     if request.META['SERVER_PORT'] == 443:
     	current_server = "https://" + request.META['HTTP_HOST']
@@ -48,6 +49,14 @@ def oauth_login(request):
     url = "%s?oauth_token=%s" % (authenticate_url,
         request.session['request_token']['oauth_token'])
     print url
+    return url
+
+def mobile_login(request):
+    url = get_oauth_url(request)
+    return HttpResponse(json.dumps(url))
+
+def oauth_login(request):
+    url = get_oauth_url(request)
     return HttpResponseRedirect(url)
 
 def test(request):
@@ -81,20 +90,22 @@ def city_list(request, province):
 @login_required
 def home(request):
     now = datetime.datetime.now()
-    html = "<html><body>"
     token = oauth.Token(request.user.get_profile().oauth_token,request.user.get_profile().oauth_secret)
     client = oauth.Client(consumer,token)
     headers = {'x-li-format':'json'}
     url = "http://api.linkedin.com/v1/people/~:(id,first-name,last-name,headline)"
     resp, content = client.request(url, "GET", headers=headers)
     profile = json.loads(content)
-    html += profile['firstName'] + " " + profile['lastName'] + "<br/>" + profile['headline']
-    return HttpResponse(html)
+    #html = profile['firstName'] + " " + profile['lastName'] + "<br/>" + profile['headline']
+    return HttpResponse(content)
  
 @login_required
 def people_search(request, client, token, headers, skill):
     url = "https://api.linkedin.com/v1/people-search:(people:(first-name,last-name,picture-url,positions:(company:(name))))?country-code=ar&keywords=" + skill
+    i=0
+    #while i < 500:
     result = client.request(url, "GET", headers=headers)
+    #i +=10
     return result
 
 @login_required
@@ -178,7 +189,6 @@ def list(request, skill, province=None, city=None):
             locations = {province_name:cities.values_list('name', flat=True)}
     else:
         locations = None
-            
     people = get_developers_by_location(locations, profile, request, client, token, headers)
     if people != None:
         html = json.dumps(people)
