@@ -24,5 +24,7 @@ urlpatterns = patterns('',
     url(r'^logout/?$', 'linkedinapp.views.oauth_logout'),
     url(r'^login/authenticated/?$', 'linkedinapp.views.oauth_authenticated'),
     url(r'^$','linkedinapp.views.home'),
-    url(r'^list/(?P<skill>\S+)/(?P<city>\S*)$','linkedinapp.views.list'),
+    url(r'^list/(?P<skill>\S+)/(?P<province>\S+)$','linkedinapp.views.list'),
+    url(r'^list/(?P<skill>\S+)/(?P<province>\S+)/(?P<city>\S+)$','linkedinapp.views.list'),
+    url(r'^list/(?P<skill>\S+)$','linkedinapp.views.list'),
 )
