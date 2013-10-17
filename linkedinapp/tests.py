@@ -13,7 +13,7 @@ class TechTestCase(TestCase):
         
     def test_technology_is_present(self):
         
-		for i in self.tech:
+		for i in tech:
 
 				# Get technology in list
 				response = self.client.get('/list/'+list[i])
@@ -32,8 +32,8 @@ class ProvinceTestCase(TestCase):
         
     def test_province_is_present(self):
    
-		for i in self.tech:
-			for j in self.prov: 
+		for i in tech:
+			for j in prov: 
 
 				# Get technology and province in lists
 				response = self.client.get('/list/'+list[i]+list[j])

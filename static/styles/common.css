@@ -78,3 +78,16 @@ h1{
     margin: 5px 12px;
     border: solid green 1px;
 }
+
+.itemLocation{
+    line-height: 12px;
+    font-size: 12px;
+    padding: 5px 0;
+    display: block;
+}
+.itemTitle{
+    display: block;
+    line-height: 14px;
+    font-size: 14px;
+    margin-bottom: 1px;
+}

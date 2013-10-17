@@ -15,7 +15,9 @@ from django.contrib.auth.models import User
 from linkedinapp.models import *
 from django.contrib.auth.decorators import login_required
 from django.core import serializers
+from django.conf.urls.static import static
 
+import sys, traceback
 
 # Project
 from linkedinapp.models import UserProfile
@@ -28,7 +30,8 @@ request_token_url = 'https://api.linkedin.com/uas/oauth/requestToken'
 access_token_url = 'https://api.linkedin.com/uas/oauth/accessToken'
 authenticate_url = 'https://www.linkedin.com/uas/oauth/authenticate'
 
-def oauth_login(request):
+def get_oauth_url(request):
+    print "algo"
     # Step 0. Get the current hostname and port for the callback
     if request.META['SERVER_PORT'] == 443:
     	current_server = "https://" + request.META['HTTP_HOST']
@@ -47,6 +50,14 @@ def oauth_login(request):
     url = "%s?oauth_token=%s" % (authenticate_url,
         request.session['request_token']['oauth_token'])
     print url
+    return url
+
+def mobile_login(request):
+    url = get_oauth_url(request)
+    return HttpResponse(json.dumps(url))
+
+def oauth_login(request):
+    url = get_oauth_url(request)
     return HttpResponseRedirect(url)
 
 def test(request):
@@ -63,35 +74,40 @@ def test(request):
 def province_list(request, country):
     if country == '':
         country = 1
+    headers = {'x-li-format':'json'}
     provinces = Province.objects.using('Geo').all().filter(id_country = country)
-    result = serializers.serialize('json',provinces)
-    return HttpResponse(result)
+    html = serializers.serialize('json',provinces)
+    #html += json.dumps(provinces)
+    return HttpResponse(html)
 
 def city_list(request, province):
     if province == '':
-        province = 1
-
+        province = 2
+    headers = {'x-li-format':'json'}
     cities = City.objects.using('Geo').all().filter(id_province = province)
-    result = serializers.serialize('json', cities)
-    return HttpResponse(result)
+    html = serializers.serialize('json', cities)
+    return HttpResponse(html)
+
 
 @login_required
 def home(request):
     now = datetime.datetime.now()
-    html = "<html><body>"
     token = oauth.Token(request.user.get_profile().oauth_token,request.user.get_profile().oauth_secret)
     client = oauth.Client(consumer,token)
     headers = {'x-li-format':'json'}
     url = "http://api.linkedin.com/v1/people/~:(id,first-name,last-name,headline)"
     resp, content = client.request(url, "GET", headers=headers)
     profile = json.loads(content)
-    html += profile['firstName'] + " " + profile['lastName'] + "<br/>" + profile['headline']
-    return HttpResponse(html)
-   
+    return render_to_response('index.html', {"firstName": profile['firstName'],"lastName": profile["lastName"],"headline": profile['headline']})
+
+
 @login_required
 def people_search(request, client, token, headers, skill):
     url = "https://api.linkedin.com/v1/people-search:(people:(first-name,last-name,picture-url,positions:(company:(name))))?country-code=ar&keywords=" + skill
+    i=0
+    #while i < 500:
     result = client.request(url, "GET", headers=headers)
+    #i +=10
     return result
 
 @login_required
@@ -104,7 +120,7 @@ def format_name(name):
    name  = name.lower()
    return name.replace(" ","-")
 
-def get_company_location(person, city, client, token, headers, request):
+def get_company_location(person, locations, client, token, headers, request):
     # Se ignoran los person que no tienen positions o values
     if ('positions' not in person) or ('values' not in person['positions']) :
         return None
@@ -121,8 +137,11 @@ def get_company_location(person, city, client, token, headers, request):
         if 'city' not in location['address']:
             continue
         # Si se especifica city y no es la que se encuentra en location sigo con la prox location
-        if (city != None) and (location['address']['city'].lower() != city.lower()):
-            continue
+        if (locations != None):
+            province = locations.keys()
+            #if (location['address']['city'].lower() != locations[province].lower()):
+            #if not any(format_name(location['address']['city'].lower()) in s.lower() for s in locations[province[0]]):
+                #continue
 
         return location['address']['city']
 
@@ -130,9 +149,8 @@ def get_company_location(person, city, client, token, headers, request):
 
 
 
-def get_developers_by_location(location,profile,request,client,token,headers):
+def get_developers_by_location(locations,profile,request,client,token,headers):
     #locationList = location.split('-',1)
-    locationList = location
     developer_list = []
     #Se retorna None si no hay datos de people
     if 'people' not in profile:
@@ -143,7 +161,7 @@ def get_developers_by_location(location,profile,request,client,token,headers):
         return None
     people = data['values']
     for person in people:
-        company_location = get_company_location(person, location, client, token, headers, request)
+        company_location = get_company_location(person, locations, client, token, headers, request)
         if company_location != None:
             del person['positions']
             person['location'] = company_location
@@ -151,19 +169,31 @@ def get_developers_by_location(location,profile,request,client,token,headers):
     return developer_list
 
 @login_required
-def list(request, skill, city=None):
+def list(request, skill, province=None, city=None):
+    #print skill, province, city
     now = datetime.datetime.now()
-    html = "<html><body>"
     token = oauth.Token(request.user.get_profile().oauth_token, request.user.get_profile().oauth_secret)
     client = oauth.Client(consumer,token)
     headers = {'x-li-format':'json'}
     resp,content = people_search(request, client, token, headers, skill)
     profile = json.loads(content)
-    if city == '':
-        city = None
-    people = get_developers_by_location(city, profile, request, client, token, headers)
+
+    locations = {}
+    #{'Buenos Aires':['Tandil','Olavarria']}
+
+    if province != None:
+        province_name = format_name(Province.objects.using('Geo').get(id = province).name)
+
+        if city != None:
+            locations = {province_name:[city]}
+        else:
+            cities = City.objects.using('Geo').all().filter(id_province = province)
+            locations = {province_name:cities.values_list('name', flat=True)}
+    else:
+        locations = None
+    people = get_developers_by_location(locations, profile, request, client, token, headers)
     if people != None:
-        html += json.dumps(people)
+        html = json.dumps(people)
 
     return HttpResponse(html)
 
