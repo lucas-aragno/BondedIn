@@ -15,21 +15,21 @@
     <div class="container">
         <h1>BondedIn</h1>
 
-            <div class="container" style="border: solid green 1px;">
+            <div class="container">
                 <div class="center">
                     <div class="span3 tecno_filter">
                         <label class="label">Tecnología</label>
                         <input type="text" id="techno_select" value="" />
                     </div>
 
-                    <div class="span3" style="border: solid red 1px">
+                    <div class="span3">
                         <label class="label">Provincia</label>
                         <select id="location_select">
 
                         </select>
                     </div>
 
-                    <div class="span3" style="border: solid red 1px">
+                    <div class="span3">
                         <label class="label">Ciudad</label>
                         <select id="city_select" disabled>
                         </select>
@@ -46,13 +46,13 @@
 
 
                 </div>
-                <div class="pagination">
-                    <ul>
-                        <li><a href="#">Prev</a></li>
-                        <li><span class="active">1</span></li>
-                        <li><a href="#">Next</a></li>
-                    </ul>
-                </div>
+                <!--<div class="pagination">-->
+                    <!--<ul>-->
+                        <!--<li><a href="#">Prev</a></li>-->
+                        <!--<li><span class="active">1</span></li>-->
+                        <!--<li><a href="#">Next</a></li>-->
+                    <!--</ul>-->
+                <!--</div>-->
 
             </div>
 
@@ -89,7 +89,7 @@
     {% verbatim %}
     <option value="">Todas</option>
     <% for (var i = 0; i < data.length; i++) { %>
-    <option value="<% print(data[i].pk) %>"><% print(data[i].fields.name) %></option>
+    <option value="<% print(data[i].fields.name) %>"><% print(data[i].fields.name) %></option>
     <% } %>
     {% endverbatim %}
 </script>
