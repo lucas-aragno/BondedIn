@@ -37,7 +37,7 @@ class ProvinceTestCase(TestCase):
 					pass
 				else:
 				# Is not OK
-					print (list[i]+list[j]'is not present')
+					print (list[j]+'is not present')
 		 
 
 
