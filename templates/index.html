@@ -1,72 +1,64 @@
+{% load staticfiles %}
 <!DOCTYPE html>
 <html>
 <head>
     <title>BondedIn</title>
-    <base href=""/>
-    <link rel="stylesheet" href="../resources/styles/common.css" type="text/css"/>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <base href="http://localhost:8000/"/>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <link rel="stylesheet" href="{% static 'styles/common.css' %}" type="text/css"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <!-- Bootstrap -->
-    <link href="../resources/bootstrap/css/bootstrap.min.css" rel="stylesheet" media="screen">
+    <link href="{% static 'bootstrap/css/bootstrap.min.css' %}" rel="stylesheet" media="screen">
 </head>
 <body>
     <div class="container">
         <h1>BondedIn</h1>
-        <form action="" method="POST">
 
             <div class="container" style="border: solid green 1px;">
                 <div class="center">
                     <div class="span3 tecno_filter">
                         <label class="label">Tecnología</label>
-                        <select>
-                            <option value="php">PHP</option>
-                            <option value="python">PYTHON</option>
-                            <option value=".net">.NET</option>
-                        </select>
+                        <input type="text" id="techno_select" value="" />
                     </div>
 
                     <div class="span3" style="border: solid red 1px">
                         <label class="label">Provincia</label>
-                        <select>
-                            <option value="php">Buenos Aires</option>
-                            <option value="python">Córdoba</option>
-                            <option value=".net">Santa Cruz</option>
+                        <select id="location_select">
+                            <option value="">Todas</option>
+                            <option value="2">Buenos Aires</option>
+                            <option value="catamarca">Catamarca</option>
+                            <option value="chaco">Chaco</option>
+                            <option value="chubut">Chubut</option>
+                            <option value="cordoba">Córdoba</option>
+                            <option value="corrientes">Corrientes</option>
+                            <option value="entre-rios">Entre Rios</option>
+                            <option value="formosa">Formosa</option>
+                            <option value="jujuy">Jujuy</option>
+                            <option value="la-pampa">La Pampa</option>
+                            <option value="la-rioja">La Rioja</option>
+                            <option value="mendoza">Mendoza</option>
+                            <option value="misiones">Misiones</option>
+                            <option value="neuquen">Neuquén</option>
+                            <option value="rio-negro">Rio Negro</option>
+                            <option value="salta">Salta</option>
+                            <option value="san-juan">San Juan</option>
+                            <option value="san-luis">San Luis</option>
+                            <option value="santa-cruz">Santa Cruz</option>
+                            <option value="santa-fe">Santa Fe</option>
+                            <option value="santiago-del-estero">Santiago Del Estero</option>
+                            <option value="tierra-del-fuego">Tierra del Fuego, Antártida e Islas del Atlántico Sur</option>
+                            <option value="tucuman">Tucumán</option>
                         </select>
                     </div>
 
                     <div class="span1">
-                        <input type="submit" style="margin-top:26px;"/>
+                        <input type="button" id="search_btn" style="margin-top:26px;" value="Buscar"/>
                     </div>
                 </div>
             </div>
-            <div class="container" id="results">
+            <div class="container">
 
-                <div class="container">
-                    <div class="span2 box">Hola</div>
-                    <div class="span2 box">Hola</div>
-                    <div class="span2 box">Hola</div>
-                    <div class="span2 box">Hola</div>
-                    <div class="span2 box">Hola</div>
-                    <div class="span2 box">Hola</div>
-                    <div class="span2 box">Hola</div>
-                    <div class="span2 box">Hola</div>
-                    <div class="span2 box">Hola</div>
-                    <div class="span2 box">Hola</div>
-                    <div class="span2 box">Hola</div>
-                    <div class="span2 box">Hola</div>
-                    <div class="span2 box">Hola</div>
-                    <div class="span2 box">Hola</div>
-                    <div class="span2 box">Hola</div>
-                    <div class="span2 box">Hola</div>
-                    <div class="span2 box">Hola</div>
-                    <div class="span2 box">Hola</div>
-                    <div class="span2 box">Hola</div>
-                    <div class="span2 box">Hola</div>
-                    <div class="span2 box">Hola</div>
-                    <div class="span2 box">Hola</div>
-                    <div class="span2 box">Hola</div>
-                    <div class="span2 box">Hola</div>
-                    <div class="span2 box">Hola</div>
-
+                <div class="container" id="results">
 
 
                 </div>
@@ -79,10 +71,51 @@
                 </div>
 
             </div>
-        </form>
+
     </div>
 
-<script src="../resources/js/jquery-1.10.2.min.js"></script>
-<script src="../resources/bootstrap/js/bootstrap.min.js"></script>
+<script src="{% static 'js/jquery-1.10.2.min.js' %}"></script>
+<script src="{% static 'bootstrap/js/bootstrap.min.js' %}"></script>
+<script src="{% static 'js/underscore-min.js' %}"></script>
+<script src="{% static 'js/backbone-min.js' %}"></script>
+
+
+<script type="text/template" id="items">
+    {% verbatim %}
+        <% for (var i = 0; i < persons.length; i++) { %>
+        <div class="span2" style="text-align:center;">
+            <h6 class="itemTitle"><% print(persons[i].firstName); %> <% print(persons[i].lastName); %></h6>
+            <div><img src="<% print(persons[i].pictureUrl); %>" alt="<% print(persons[i].firstName); %> <% print(persons[i].lastName); %>"/></div>
+            <span class="itemLocation"><% print(persons[i].location); %></span>
+        </div>
+        <% } %>
+    {% endverbatim %}
+</script>
+
+<script type="text/javascript">
+    var tpl_c;
+    var salida;
+    $(document).ready(function(){
+        tpl_c = _.template($('#items').html());
+
+        $('#search_btn').click(function(){
+            tech = $('#techno_select').val();
+            prov = $('#location_select').val();
+            tech = tech.replace(' ','-');
+            prov = prov.replace(' ','-');
+            url = "list/"+tech;
+            if (prov != "")
+                url += "/" + prov;
+            $.get( encodeURI(url), function( data ) {
+
+                salida = {"persons" : JSON.parse(data)};
+                $('#results').html( tpl_c(salida) );
+            });
+
+
+        });
+    });
+</script>
+
 </body>
 </html>

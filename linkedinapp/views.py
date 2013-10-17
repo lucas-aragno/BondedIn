@@ -15,6 +15,7 @@ from django.contrib.auth.models import User
 from linkedinapp.models import *
 from django.contrib.auth.decorators import login_required
 from django.core import serializers
+from django.conf.urls.static import static
 
 import sys, traceback
 
@@ -87,6 +88,7 @@ def city_list(request, province):
     html = serializers.serialize('json', cities)
     return HttpResponse(html)
 
+
 @login_required
 def home(request):
     now = datetime.datetime.now()
@@ -96,9 +98,9 @@ def home(request):
     url = "http://api.linkedin.com/v1/people/~:(id,first-name,last-name,headline)"
     resp, content = client.request(url, "GET", headers=headers)
     profile = json.loads(content)
-    #html = profile['firstName'] + " " + profile['lastName'] + "<br/>" + profile['headline']
-    return HttpResponse(content)
- 
+    return render_to_response('index.html', {"firstName": profile['firstName'],"lastName": profile["lastName"],"headline": profile['headline']})
+
+
 @login_required
 def people_search(request, client, token, headers, skill):
     url = "https://api.linkedin.com/v1/people-search:(people:(first-name,last-name,picture-url,positions:(company:(name))))?country-code=ar&keywords=" + skill
