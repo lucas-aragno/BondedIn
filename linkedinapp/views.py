@@ -198,7 +198,7 @@ def list(request, skill, province_id=None, city_name=None):
     if people != None:
         html = json.dumps(people)
 
-    return HttpResponse(html)
+    return HttpResponse(html, content_type="application/json")
 
 @login_required
 def oauth_logout(request):
