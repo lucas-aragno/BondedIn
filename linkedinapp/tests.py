@@ -12,6 +12,7 @@ def setUp(self):
 class TechTestCase(TestCase):
         
     def test_technology_is_present(self):
+<<<<<<< HEAD
         global tech
 	for i in tech:
 
@@ -24,6 +25,20 @@ class TechTestCase(TestCase):
 			else:
 			# Is not OK
 				print (list[i]+'is not present')
+=======
+        
+		for i in tech:
+
+				# Get technology in list
+				response = self.client.get('/list/'+list[i])
+
+				# Check that the response is 200 OK.
+				if self.assertEqual(response.status_code, 200):
+					pass
+				else:
+				# Is not OK
+					print (list[i]+'is not present')
+>>>>>>> f642d022f703206b0c016baf309e7dd765be9f20
 					
 class ProvinceTestCase(TestCase):
     def setUp(self):
@@ -31,8 +46,12 @@ class ProvinceTestCase(TestCase):
 					'mendoza','cordoba','santafe','buenos-aires','rio-negro','neuquen','chubut','santa-cruz','tierra-del-fuego')
         
     def test_province_is_present(self):
+<<<<<<< HEAD
 		global tech
 		global prov
+=======
+   
+>>>>>>> f642d022f703206b0c016baf309e7dd765be9f20
 		for i in tech:
 			for j in prov: 
 
