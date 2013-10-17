@@ -11,6 +11,7 @@
     <link href="{% static 'bootstrap/css/bootstrap.min.css' %}" rel="stylesheet" media="screen">
 </head>
 <body>
+    <img id="loading" src="{% static 'images/ajax_loader.gif' %}" style="display:none;position: absolute; width: 10%; top: 40%; left: 45%;"/>
     <div class="container">
         <h1>BondedIn</h1>
 
@@ -24,30 +25,13 @@
                     <div class="span3" style="border: solid red 1px">
                         <label class="label">Provincia</label>
                         <select id="location_select">
-                            <option value="">Todas</option>
-                            <option value="2">Buenos Aires</option>
-                            <option value="catamarca">Catamarca</option>
-                            <option value="chaco">Chaco</option>
-                            <option value="chubut">Chubut</option>
-                            <option value="cordoba">Córdoba</option>
-                            <option value="corrientes">Corrientes</option>
-                            <option value="entre-rios">Entre Rios</option>
-                            <option value="formosa">Formosa</option>
-                            <option value="jujuy">Jujuy</option>
-                            <option value="la-pampa">La Pampa</option>
-                            <option value="la-rioja">La Rioja</option>
-                            <option value="mendoza">Mendoza</option>
-                            <option value="misiones">Misiones</option>
-                            <option value="neuquen">Neuquén</option>
-                            <option value="rio-negro">Rio Negro</option>
-                            <option value="salta">Salta</option>
-                            <option value="san-juan">San Juan</option>
-                            <option value="san-luis">San Luis</option>
-                            <option value="santa-cruz">Santa Cruz</option>
-                            <option value="santa-fe">Santa Fe</option>
-                            <option value="santiago-del-estero">Santiago Del Estero</option>
-                            <option value="tierra-del-fuego">Tierra del Fuego, Antártida e Islas del Atlántico Sur</option>
-                            <option value="tucuman">Tucumán</option>
+
+                        </select>
+                    </div>
+
+                    <div class="span3" style="border: solid red 1px">
+                        <label class="label">Ciudad</label>
+                        <select id="city_select" disabled>
                         </select>
                     </div>
 
@@ -80,7 +64,7 @@
 <script src="{% static 'js/backbone-min.js' %}"></script>
 
 
-<script type="text/template" id="items">
+<script type="text/template" id="items_tpl">
     {% verbatim %}
         <% for (var i = 0; i < persons.length; i++) { %>
         <div class="span2" style="text-align:center;">
@@ -92,28 +76,87 @@
     {% endverbatim %}
 </script>
 
+<script type="text/template" id="province_tpl">
+    {% verbatim %}
+    <option value="">Todas</option>
+    <% for (var i = 0; i < data.length; i++) { %>
+        <option value="<% print(data[i].pk) %>"><% print(data[i].fields.name) %></option>
+    <% } %>
+    {% endverbatim %}
+</script>
+
+<script type="text/template" id="city_tpl">
+    {% verbatim %}
+    <option value="">Todas</option>
+    <% for (var i = 0; i < data.length; i++) { %>
+    <option value="<% print(data[i].pk) %>"><% print(data[i].fields.name) %></option>
+    <% } %>
+    {% endverbatim %}
+</script>
+
+
 <script type="text/javascript">
-    var tpl_c;
-    var salida;
+
+    $("#techno_select").keyup(function(event){
+        if(event.keyCode == 13){
+            $("#search_btn").click();
+        }
+    });
+
+    var tpl_c, tpl_prov, tpl_city;
+    tpl_c = _.template($('#items_tpl').html());
+    tpl_prov = _.template($('#province_tpl').html());
+    tpl_city = _.template($('#city_tpl').html());
+    //Requesting for provinces list
+    $.get('provinces/',function(data){
+        tmp = {"data" : JSON.parse(data)};
+        $('#location_select').html( tpl_prov(tmp) );
+    });
+
+
     $(document).ready(function(){
-        tpl_c = _.template($('#items').html());
+
 
         $('#search_btn').click(function(){
+            if( $.trim(($('#techno_select').val()))  == ''){
+                $('#techno_select').val('');
+                alert('Falta ingresar una tecnología');
+                return false;
+            }
+            $('#loading').fadeIn(1000);
             tech = $('#techno_select').val();
             prov = $('#location_select').val();
-            tech = tech.replace(' ','-');
-            prov = prov.replace(' ','-');
+            city = $('#city_select').val();
             url = "list/"+tech;
-            if (prov != "")
-                url += "/" + prov;
+            if (prov != ''){
+                url += '/' + prov;
+                if(city != '') url += '/' + city;
+            }
             $.get( encodeURI(url), function( data ) {
 
-                salida = {"persons" : JSON.parse(data)};
-                $('#results').html( tpl_c(salida) );
+                tmp = {"persons" : JSON.parse(data)};
+                $('#results').html( tpl_c(tmp) );
+                $('#loading').fadeOut(600);
+            }).fail(function(){
+                $('#loading').fadeOut(600);
+                alert('Hubo un error causado por lo beta que es esta versión...');
             });
-
-
         });
+
+
+        $('#location_select').change(function(){
+            if($(this).val() == ''){
+                $('#city_select').attr('disabled','true');
+                $('#city_select').html('');
+            }else{
+                $.get('cities/'+$(this).val(),function(data){
+                    tmp = {"data" : JSON.parse(data)};
+                    $('#city_select').html( tpl_city(tmp) );
+                    $('#city_select').removeAttr('disabled');
+                });
+            }
+        });
+
     });
 </script>
 
