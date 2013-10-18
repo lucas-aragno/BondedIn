@@ -67,6 +67,7 @@
 <script type="text/template" id="items_tpl">
     {% verbatim %}
         <% for (var i = 0; i < persons.length; i++) { %>
+        <% if( (persons[i].firstname != ""){ %>
         <div class="span2" style="text-align:center;">
             <h6 class="itemTitle"><% print(persons[i].firstName); %> <% print(persons[i].lastName); %></h6>
             <div><img src="<% print(persons[i].pictureUrl); %>" alt="<% print(persons[i].firstName); %> <% print(persons[i].lastName); %>"/></div>
@@ -74,6 +75,7 @@
         </div>
         <% if( ((i+1)%5)==0 ){ %>
             <div style="clear:both;"></div>
+        <% } %>
         <% } %>
         <% } %>
     {% endverbatim %}
