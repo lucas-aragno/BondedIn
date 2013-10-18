@@ -122,7 +122,7 @@ def people_search(request, client, token, headers, skill):
     results = []
     i=0
     while i < 500:
-        i +=25
+        i += 25
         url = "https://api.linkedin.com/v1/people-search:(people:(public-profile-url,first-name,last-name,picture-url,positions:(company:(name))))?country-code=ar&keywords=" + skill + "&start=" + str(i) + "&count=25"
         resp,result = client.request(url, "GET", headers=headers)
         object_result = json.loads(result)
