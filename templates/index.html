@@ -72,6 +72,9 @@
             <div><img src="<% print(persons[i].pictureUrl); %>" alt="<% print(persons[i].firstName); %> <% print(persons[i].lastName); %>"/></div>
             <span class="itemLocation"><% print(persons[i].location); %></span>
         </div>
+        <% if( ((i+1)%5)==0 ){ %>
+            <div style="clear:both;"></div>
+        <% } %>
         <% } %>
     {% endverbatim %}
 </script>
