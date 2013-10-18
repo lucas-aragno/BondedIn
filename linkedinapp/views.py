@@ -5,6 +5,8 @@ import datetime
 import time
 import re
 import urllib
+import logging
+
 
 # Django
 from django.http import HttpResponse
@@ -32,6 +34,8 @@ access_token_url = 'https://api.linkedin.com/uas/oauth/accessToken'
 authenticate_url = 'https://www.linkedin.com/uas/oauth/authenticate'
 
 def get_oauth_url(request):
+    logger = logging.getLogger('BondedIn.linkedinapp')
+    logger.debug("Called function get_oauth_url")
     # Step 0. Get the current hostname and port for the callback
     if request.META['SERVER_PORT'] == 443:
     	current_server = "https://" + request.META['HTTP_HOST']
@@ -49,29 +53,37 @@ def get_oauth_url(request):
     # Step 3. Redirect the user to the authentication URL.
     url = "%s?oauth_token=%s" % (authenticate_url,
         request.session['request_token']['oauth_token'])
-    print url
+    logger.debug(url)
     return url
 
 def mobile_login(request):
+    logger = logging.getLogger('BondedIn.linkedinapp')
+    logger.debug("Called function mobile_login")
     url = get_oauth_url(request)
     return HttpResponse(json.dumps(url))
 
 def oauth_login(request):
+    logger = logging.getLogger('BondedIn.linkedinapp.oauth_login')
+    logger.debug("Called function oauth_login")
     url = get_oauth_url(request)
     return HttpResponseRedirect(url)
 
 def test(request):
+    logger = logging.getLogger('BondedIn.linkedinapp.test')
+    logger.debug("Called function test")
     country_list = Country.objects.using('Geo').all()
     for country in country_list:
-        print country.name
+        logger.debug(country.name)
     province_list = Province.objects.using('Geo').all()
     for province in province_list:
-        print province.name
+        logger.debug(province.name)
     print country_list
     html = "<html><body>"
     return HttpResponse(html)
 
 def province_list(request, country):
+    logger = logging.getLogger('BondedIn.linkedinapp')
+    logger.debug("Called function province_list")
     if country == '':
         country = 1
     headers = {'x-li-format':'json'}
@@ -81,6 +93,8 @@ def province_list(request, country):
     return HttpResponse(html)
 
 def city_list(request, province):
+    logger = logging.getLogger('BondedIn.linkedinapp')
+    logger.debug("Called function city_list")
     if province == '':
         province = 2
     headers = {'x-li-format':'json'}
@@ -91,6 +105,8 @@ def city_list(request, province):
 
 @login_required
 def home(request):
+    logger = logging.getLogger('BondedIn.linkedinapp')
+    logger.debug("Called function home")
     now = datetime.datetime.now()
     token = oauth.Token(request.user.get_profile().oauth_token,request.user.get_profile().oauth_secret)
     client = oauth.Client(consumer,token)
@@ -101,9 +117,12 @@ def home(request):
     return render_to_response('index.html', {"firstName": profile['firstName'],"lastName": profile["lastName"],"headline": profile['headline']})
 
 def people_search(request, client, token, headers, skill):
+    logger = logging.getLogger('BondedIn.linkedinapp')
+    logger.debug("Called function people_search")
     results = []
     i=0
-    while i < 100:
+    while i < 500:
+        i +=25
         url = "https://api.linkedin.com/v1/people-search:(people:(public-profile-url,first-name,last-name,picture-url,positions:(company:(name))))?country-code=ar&keywords=" + skill + "&start=" + str(i) + "&count=25"
         resp,result = client.request(url, "GET", headers=headers)
         object_result = json.loads(result)
@@ -111,11 +130,12 @@ def people_search(request, client, token, headers, skill):
             continue
         for people in object_result['people']['values']:
             results.append(people)
-        i +=25
     return results
  
 @login_required
 def company_search(request, client, token, headers, name):
+    logger = logging.getLogger('BondedIn.linkedinapp')
+    logger.debug("Called function company_search")
     url = "http://api.linkedin.com/v1/companies/universal-name=" + name + ":(name,locations)"
     result = client.request(url, "GET", headers=headers)
     return result
@@ -125,51 +145,64 @@ def format_name(name):
    return name.replace(" ","-")
 
 def get_company_location(person, locations, client, token, headers, request):
+    logger = logging.getLogger('BondedIn.linkedinapp')
+    logger.debug("Called function get_company_location con person: " + person['firstName'] + " " + person['lastName'])
     # Se ignoran los person que no tienen positions o values
     if ('positions' not in person) or ('values' not in person['positions']) :
+        logger.debug(person['firstName'] + " " + person['lastName'] + "Se ignora por no tener positions o values")
         return None
     company_name = person['positions']['values'][0]['company']['name']
     resp2,content = company_search(request, client, token, headers, format_name(company_name))
+    #print resp2,content
     company = json.loads(content)
 
     # Si la company no tiene location retorno false
     if 'locations' not in company:
+        logger.debug(company_name + " no tiene location retorno false")
         return None
     
     for location in company['locations']['values']:
-        print location
+        #print location
         # Si city no esta en location sigo con la prox location
         if 'city' not in location['address']:
+            logger.debug("Si city no esta en location sigo con la prox location")
             continue
         # Si se especifica city y no es la que se encuentra en location sigo con la prox location
         if (locations != None):
             province = locations.keys()
-            print locations[province[0]]
+            #print locations[province[0]]
             if not any(format_name(location['address']['city'].lower()) in s.lower() for s in locations[province[0]]):
+                logger.debug("No city in locations[province[0]]")
                 continue
             return location['address']['city']
-        print location['address']['city']
         if location['address']['city'] in province_by_city:
             return location['address']['city']
 
     return None
 
 
-
 def get_developers_by_location(locations,profile,request,client,token,headers):
+    logger = logging.getLogger('BondedIn.linkedinapp')
+    logger.debug("Called function get_developers_by_location")
     developer_list = []
     for person in profile:
         company_location = get_company_location(person, locations, client, token, headers, request)
+        
         if company_location != None:
             del person['positions']
             person['location'] = company_location
             developer_list.append(person)
+        else:
+            logger.debug("company_location is None")
+
     return developer_list
 
 province_by_city = {}
 city_by_province = {}
 @login_required
 def list(request, skill, province_id=None, city_name=None):
+    logger = logging.getLogger('BondedIn.linkedinapp')
+    logger.debug("Called function list con skill: " + str(skill) + " province_id: " + str(province_id) + " city_name: " + str(city_name))
     now = datetime.datetime.now()
     token = oauth.Token(request.user.get_profile().oauth_token, request.user.get_profile().oauth_secret)
     client = oauth.Client(consumer,token)

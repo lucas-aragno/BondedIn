@@ -24,7 +24,7 @@ DATABASES = {
         'NAME': 'Geo',                      # Or path to database file if using sqlite3.
         # The following settings are not used with sqlite3:
         'USER': 'root',
-        'PASSWORD': '',
+        'PASSWORD': '123456',
         'HOST': '',                      # Empty for localhost through domain sockets or '127.0.0.1' for localhost through TCP.
         'PORT': '',                      # Set to empty string for default.
     }
@@ -81,7 +81,7 @@ STATICFILES_DIRS = (
     # Put strings here, like "/home/html/static" or "C:/www/django/static".
     # Always use forward slashes, even on Windows.
     # Don't forget to use absolute paths, not relative paths.
-    '/home/polak/workspace/pythonWorkspace/BondedIn/static/',
+    '/home/mpascal/BondedIn/static/',
 )
 
 # List of finder classes that know how to find static files in
@@ -139,8 +139,14 @@ INSTALLED_APPS = (
 )
 
 AUTH_PROFILE_MODULE = 'linkedinapp.UserProfile'
-LINKEDIN_TOKEN='ery914zg2tbg'
-LINKEDIN_SECRET='dcALw3wUR7Vqwp3m'
+#LINKEDIN_TOKEN='ery914zg2tbg'
+LINKEDIN_TOKEN='z3xopx5x77sc'
+#LINKEDIN_TOKEN='4zw2agt3vfq0'
+#LINKEDIN_TOKEN='7izazw32clro'
+#LINKEDIN_SECRET='dcALw3wUR7Vqwp3m'
+LINKEDIN_SECRET='yO55awMgPoLuj4Gv'
+#LINKEDIN_SECRET='g3ZaYZBDru6vut8o'
+#LINKEDIN_SECRET='mykbvokPZK5BZH8a'
 LOGIN_URL='/login/'
 
 SESSION_SERIALIZER = 'django.contrib.sessions.serializers.JSONSerializer'
@@ -153,22 +159,35 @@ SESSION_SERIALIZER = 'django.contrib.sessions.serializers.JSONSerializer'
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': False,
+    'formatters': {
+        'verbose': {
+            'format': '%(levelname)s %(asctime)s %(module)s %(process)d %(thread)d %(message)s'
+        },
+        'simple': {
+            'format': '%(levelname)s %(message)s'
+        },
+    },
     'filters': {
         'require_debug_false': {
             '()': 'django.utils.log.RequireDebugFalse'
         }
     },
     'handlers': {
+        'console':{
+            'level': 'DEBUG',
+            'class': 'logging.StreamHandler',
+            'formatter': 'simple'
+        },
         'mail_admins': {
-            'level': 'ERROR',
+            'level': 'DEBUG',
             'filters': ['require_debug_false'],
             'class': 'django.utils.log.AdminEmailHandler'
         }
     },
     'loggers': {
-        'django.request': {
-            'handlers': ['mail_admins'],
-            'level': 'ERROR',
+        'BondedIn.linkedinapp': {
+            'handlers': ['console'],
+            'level': 'DEBUG',
             'propagate': True,
         },
     }
