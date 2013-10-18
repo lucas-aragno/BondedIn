@@ -133,8 +133,8 @@
                 if(city != '') url += '/' + city;
             }
             $.get( encodeURI(url), function( data ) {
-
-                tmp = {"persons" : JSON.parse(data)};
+                   
+                tmp = {"persons" : JSON.parse(JSON.stringify(data))};
                 $('#results').html( tpl_c(tmp) );
                 $('#loading').fadeOut(600);
             }).fail(function(){
