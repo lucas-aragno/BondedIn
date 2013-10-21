@@ -9,13 +9,13 @@ tech = ('actionscript','agile','ampq','android','angular.js','apache','asp.net',
 
 prov = ('salta','jujuy','tucuman','corrientes','entre-rios','misiones','formosa','chaco','santiago-del-estero','sanjuan','larioja','catamarca',
 		'mendoza','cordoba','santafe','buenos-aires','rio-negro','neuquen','chubut','santa-cruz','tierra-del-fuego')
-
-class ProvTestCase(TestCase):
-
+					
+class ProvinceTestCase(TestCase):
+        
 	def test_province_is_present(self):
-		ausent = False
-		global prov
+		present = False
 		global tech
+		global prov
 		for i in tech:
 			for j in prov:
 				present = self.province_is_present(i,j)
@@ -25,13 +25,13 @@ class ProvTestCase(TestCase):
 		
 	def province_is_present(self, tech, prov):
 		
-		# Get province in list
+			# Get province in list
 		response = self.client.get('/list/'+prov)
 
-		# Check that the response is OK
+			# Check that the response is OK
 		statusprov = response.status_code == 200
 		if (statusprov == False):
-				print tech + ' not found at ' + prov
+			print tech + ' not found at ' + prov
 		return statusprov
 
 class TechTestCase(TestCase):		

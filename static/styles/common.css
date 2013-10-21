@@ -57,7 +57,7 @@ h1{
 .main{
     width: 980px;
     margin: 0 auto;
-    border: solid red 1px;
+    /*border: solid red 1px;*/
 }
 
 .center{
@@ -66,17 +66,17 @@ h1{
 }
 
 .tecno_filter{
-    border: solid red 1px;
+    /*border: solid red 1px;*/
     margin-left: 0px;
 }
 
 #results{
-    border: solid grey 1px;
+    /*border: solid grey 1px;*/
 }
 
 .box{
     margin: 5px 12px;
-    border: solid green 1px;
+    /*border: solid green 1px;*/
 }
 
 .itemLocation{
@@ -90,4 +90,5 @@ h1{
     line-height: 14px;
     font-size: 14px;
     margin-bottom: 1px;
+    min-height: 28px;
 }
