@@ -90,4 +90,5 @@ h1{
     line-height: 14px;
     font-size: 14px;
     margin-bottom: 1px;
+    min-height: 28px;
 }

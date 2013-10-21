@@ -68,11 +68,11 @@
     {% verbatim %}
         <% for (var i = 0; i < persons.length; i++) { %>
         <% if(persons[i].firstName != "") { %>
-        <div class="span2" style="text-align:center;">
+        <a href="<% print(persons[i].publicProfileUrl); %>" alt="<% print(persons[i].firstName); %> <% print(persons[i].lastName); %>" class="span2" style="text-align:center;">
             <h6 class="itemTitle"><% print(persons[i].firstName); %> <% print(persons[i].lastName); %></h6>
-            <div><img src="<% print(persons[i].pictureUrl); %>" alt="<% print(persons[i].firstName); %> <% print(persons[i].lastName); %>"/></div>
+            <div><img style="width:80px;height:80px;" src="<% if( typeof persons[i].pictureUrl !== 'undefined' && persons[i].pictureUrl != '' ){ print(persons[i].pictureUrl); }else{ print('static/images/unknown.png'); } %>" alt="<% print(persons[i].firstName); %> <% print(persons[i].lastName); %>"/></div>
             <span class="itemLocation"><% print(persons[i].location); %></span>
-        </div>
+        </a>
         <% if( ((i+1)%5)==0 ){ %>
             <div style="clear:both;"></div>
         <% } %>
