@@ -1,0 +1,14 @@
+# Este archivo debe tomarse como basse para generar BondedIn/local_settings.py.
+
+# Database configs
+MYSQL_DATABASE_NAME = 'GEO'
+MYSQL_USER = 'root'
+MYSQL_PASSWORD = '123456'
+MYSQL_HOST = ''
+MYSQL_PORT = ''
+
+# LinkedIn token oauth
+TOKEN='foji5h6xotaz'
+SECRET='p3t1ih9fTylOI4LS'
+
+

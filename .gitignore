@@ -2,4 +2,5 @@
 ###################
 *.pyc
 linkedinapp/*.pyc
+BondedIn/local_settings.py
 .idea

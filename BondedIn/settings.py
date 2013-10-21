@@ -1,5 +1,11 @@
 # Django settings for BondedIn project.
 
+try:
+    from local_settings import *
+except:
+    print "FATAL: Cannot import local_setings"
+    pass
+
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
 
@@ -21,12 +27,11 @@ DATABASES = {
     },
     'Geo': {
         'ENGINE': 'django.db.backends.mysql', # Add 'postgresql_psycopg2', 'mysql', 'sqlite3' or 'oracle'.
-        'NAME': 'Geo',                      # Or path to database file if using sqlite3.
-        # The following settings are not used with sqlite3:
-        'USER': 'root',
-        'PASSWORD': '123456',
-        'HOST': '',                      # Empty for localhost through domain sockets or '127.0.0.1' for localhost through TCP.
-        'PORT': '',                      # Set to empty string for default.
+        'NAME': MYSQL_DATABASE_NAME,                      # Or path to database file if using sqlite3.
+        'USER': MYSQL_USER,
+        'PASSWORD': MYSQL_PASSWORD,
+        'HOST': MYSQL_HOST,                      # Empty for localhost through domain sockets or '127.0.0.1' for localhost through TCP.
+        'PORT': MYSQL_PORT,                      # Set to empty string for default.
     }
 }
 
@@ -139,14 +144,11 @@ INSTALLED_APPS = (
 )
 
 AUTH_PROFILE_MODULE = 'linkedinapp.UserProfile'
-#LINKEDIN_TOKEN='ery914zg2tbg'
-LINKEDIN_TOKEN='z3xopx5x77sc'
-#LINKEDIN_TOKEN='4zw2agt3vfq0'
-#LINKEDIN_TOKEN='7izazw32clro'
-#LINKEDIN_SECRET='dcALw3wUR7Vqwp3m'
-LINKEDIN_SECRET='yO55awMgPoLuj4Gv'
-#LINKEDIN_SECRET='g3ZaYZBDru6vut8o'
-#LINKEDIN_SECRET='mykbvokPZK5BZH8a'
+
+# LinkedIn token oauth
+LINKEDIN_TOKEN= TOKEN
+LINKEDIN_SECRET= SECRET
+
 LOGIN_URL='/login/'
 
 SESSION_SERIALIZER = 'django.contrib.sessions.serializers.JSONSerializer'
