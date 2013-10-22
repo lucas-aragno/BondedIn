@@ -1,24 +1,24 @@
 # Clase que representa la compania
-Class Company:
+class Company:
     id
     name
-    universal-name
-    email-domains
-    company-type
+    universalName
+    emailDomains
+    companyType
     ticker
-    website-url
+    websiteUrl
     industries
     status
-    logo-url
-    square-logo-url
-    blog-rss-url
-    twitter-id
-    employee-count-range
+    logoUrl
+    squareLogoUrl
+    blogRssUrl
+    twitterId
+    employeeCountRange
     specialties
     locations
     description
-    end-year
-    num-followers
+    endYear
+    numFollowers
 
     def getId(self):
         return self.id
@@ -30,19 +30,19 @@ Class Company:
         return self.name
 
     def setName(self, name):
-        return self.name
+        self.name = name
 
     def getEmailDomains(self):
-        return self.email-domains
+        return self.emailDomains
 
-    def setEmailDomains(self, email-domains):
-        self.email.domains = email-domains
+    def setEmailDomains(self, emailDomains):
+        self.emailDomains = emailDomains
 
     def getCompanyType(self):
-        return self.company-type
+        return self.companyType
 
-    def setCompanyType(self, company-type):
-        self.company-type = company-type
+    def setCompanyType(self, companyType):
+        self.companyType = companyType
 
     def getTiker(self):
         return self.tiker
@@ -51,10 +51,10 @@ Class Company:
         self.tiker = tiker
 
     def getWebsiteUrl(self):
-        return self.website-url
+        return self.websiteUrl
 
-    def setWebsiteUrl(self, website-url):
-        self.website-url = website-url
+    def setWebsiteUrl(self, websiteUrl):
+        self.websiteUrl = websiteUrl
 
     def getIndustries(self):
         return self.industries
@@ -69,34 +69,34 @@ Class Company:
         self.status = status
 
     def getLogoUrl(self):
-        return self.logo-url
+        return self.logoUrl
 
-    def setLogoUrl(self, logo-url):
-        self.logo-url = logo-url
+    def setLogoUrl(self, logoUrl):
+        self.logoUrl = logoUrl
 
     def getSquareLogoUrl(self):
-        return self.square-logo-url
+        return self.squareLogoUrl
 
-    def setSquareLogoUrl(self, square-logo-url):
-        self.square-logo-url = square-logo-url
+    def setSquareLogoUrl(self, squareLogoUrl):
+        self.squareLogoUrl = squareLogoUrl
 
     def getBlogRssUrl(self):
-        return self.blog-rss-url
+        return self.blogRssUrl
 
-    def setBlogRssUrl(self, blog-rss-url):
-        self.blog-rss-url = blog-rss-url
+    def setBlogRssUrl(self, blogRssUrl):
+        self.blogRssUrl = blogRssUrl
 
     def getTwitterId(self):
-        return self-twitter-id
+        return self.twitterId
 
-    def setTwitterId(self, twitter-id):
-        self.twitter-id = twitter-id
+    def setTwitterId(self, twitterId):
+        self.twitterId = twitterId
 
     def getEmployeeCountRange(self):
-        return self.employee-count-range
+        return self.employeeCountRange
 
-    def setEmployeeCountRange(self, employee-count-range):
-        self.employee-count-range = employee-count-range
+    def setEmployeeCountRange(self, employeeCountRange):
+        self.employeeCountRange = employeeCountRange
 
     def getSpecialities(self):
         return self.specialities
@@ -117,13 +117,13 @@ Class Company:
         self.description = description
 
     def getEndYear(self):
-        return self.end-year
+        return self.endYear
 
-    def setEndYear(self, end-year):
-        self.end-year = end-year
+    def setEndYear(self, endYear):
+        self.endYear = endYear
 
     def getNumFollowers(self):
-        return self.num-followers
+        return self.numFollowers
 
-    def setNumFollowers(self, num-followers):
-        self.num-followers = num-followers
+    def setNumFollowers(self, numFollowers):
+        self.numFollowers = numFollowers
