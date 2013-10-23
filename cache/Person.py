@@ -1,5 +1,5 @@
-
-class Person:
+from Entity import Entity
+class Person(Entity):
     id
     firstName
     lastName

@@ -28,8 +28,9 @@ from pymongo import *
 from cStringIO import StringIO
 
 
-from linkedinapp.Company import Company
-from linkedinapp.JsonSerializable import JsonSerializable
+from cache.Company import Company
+
+
 
 import sys, traceback
 
@@ -100,9 +101,11 @@ def test(request):
     
     company.setId(234)
     db.Companies.insert({"id":1})
+    
    
-    print company.getSerialize()
-    print db.Companies.find()
+    j= company.getSerializable()
+    print j
+    db.Companies.find()
 
     html = "<html><body>"
 

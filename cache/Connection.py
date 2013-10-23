@@ -1,5 +1,5 @@
 from pymongo import *
-
+from Company import Company
 from django.core import serializers
 import json
 class Conexion:

@@ -1,4 +1,5 @@
-class Location:
+from Entity import Entity
+class Location(Entity):
     description
     isHeadquarters
     isActive

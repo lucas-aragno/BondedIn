@@ -1,5 +1,7 @@
+from Entity import Entity
 # Clase que representa la compania
-class Company:
+
+class Company (Entity):
 
     def getId(self):
         return self.id
