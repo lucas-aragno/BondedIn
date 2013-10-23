@@ -7,6 +7,8 @@ import re
 import urllib
 import logging
 
+from cache.Company import Company
+
 
 # Django
 from django.http import HttpResponse
@@ -38,9 +40,10 @@ def get_oauth_url(request):
     logger.debug("Called function get_oauth_url")
     # Step 0. Get the current hostname and port for the callback
     if request.META['SERVER_PORT'] == 443:
-    	current_server = "https://" + request.META['HTTP_HOST']
+   	    current_server = "https://" + request.META['HTTP_HOST']
     else:
-	current_server = "http://" + request.META['HTTP_HOST']
+	    current_server = "http://" + request.META['HTTP_HOST']
+    logger.debug("Current server: " + current_server)
     oauth_callback = current_server + "/login/authenticated"
     # Step 1. Get a request token from Provider.
     resp, content = client.request("%s?oauth_callback=%s" % (request_token_url,oauth_callback), "GET")
@@ -71,19 +74,21 @@ def oauth_login(request):
 def test(request):
     logger = logging.getLogger('BondedIn.linkedinapp.test')
     logger.debug("Called function test")
-    country_list = Country.objects.using('Geo').all()
-    for country in country_list:
-        logger.debug(country.name)
-    province_list = Province.objects.using('Geo').all()
-    for province in province_list:
-        logger.debug(province.name)
-    print country_list
+
     html = "<html><body>"
+    company = Company()
+    company.setName('Martin Pascal')
+
+    html += company.getName()
+
+
+
+
     return HttpResponse(html)
 
 def province_list(request, country):
     logger = logging.getLogger('BondedIn.linkedinapp')
-    logger.debug("Called function province_list")
+    logger.error("Called function province_list")
     if country == '':
         country = 1
     headers = {'x-li-format':'json'}
@@ -241,6 +246,8 @@ def oauth_logout(request):
     return HttpResponseRedirect('/')
 
 def oauth_authenticated(request):
+    logger = logging.getLogger('BondedIn.linkedinapp')
+    logger.debug("Called oauth_authenticated function")
     # Step 1. Use the request token in the session to build a new client.
     token = oauth.Token(request.session['request_token']['oauth_token'],
         request.session['request_token']['oauth_token_secret'])
@@ -251,6 +258,7 @@ def oauth_authenticated(request):
     # Step 2. Request the authorized access token from Provider.
     resp, content = client.request(access_token_url, "GET")
     if resp['status'] != '200':
+        logger.error('No pudo autenticar')
         print content
         raise Exception("Invalid response from Provider.")
     access_token = dict(cgi.parse_qsl(content))

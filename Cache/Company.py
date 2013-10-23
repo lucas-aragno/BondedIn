@@ -1,24 +1,5 @@
 # Clase que representa la compania
 class Company:
-    id
-    name
-    universalName
-    emailDomains
-    companyType
-    ticker
-    websiteUrl
-    industries
-    status
-    logoUrl
-    squareLogoUrl
-    blogRssUrl
-    twitterId
-    employeeCountRange
-    specialties
-    locations
-    description
-    endYear
-    numFollowers
 
     def getId(self):
         return self.id
