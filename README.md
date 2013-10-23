@@ -1,4 +1,5 @@
 #Instalacion de Modulos necesarios
+pip install Django,
 pip install requests , 
 pip install requests_oauthlib , 
 pip install oauth2 , 
