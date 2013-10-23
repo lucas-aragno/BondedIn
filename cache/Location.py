@@ -1,5 +1,5 @@
-from Entity import Entity
-class Location(Entity):
+
+class Location:
     description
     isHeadquarters
     isActive
@@ -10,6 +10,7 @@ class Location(Entity):
     addressPostalCode
     addressCountryCode
     addressRegionCode
+    
 
     def getDescription(self):
         return self.description
@@ -70,3 +71,5 @@ class Location(Entity):
 
     def setAddressRegionCode(self, addressRegionCode):
         self.addressRegionCode = addressRegionCode
+        
+    

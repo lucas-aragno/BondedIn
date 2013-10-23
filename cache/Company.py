@@ -1,8 +1,11 @@
-from Entity import Entity
+
+from pymongo import *
 # Clase que representa la compania
 
-class Company (Entity):
+class Company:
+   
 
+        
     def getId(self):
         return self.id
 
@@ -110,3 +113,7 @@ class Company (Entity):
 
     def setNumFollowers(self, numFollowers):
         self.numFollowers = numFollowers
+    
+    
+    
+

@@ -10,6 +10,7 @@ import pickle
 
 
 from cache.Company import Company
+from cache.Conexion import  Conexion
 
 
 # Django
@@ -85,27 +86,18 @@ def test(request):
     logger = logging.getLogger('BondedIn.linkedinapp.test')
     logger.debug("Called function test")
 
-
-
-    
-    print "Conectando al Servidor de Base de Datos Local..."
-    conexion = Connection() # Se crea la conexion con la base de datos de mongo, en este caso se usa la url
-    db = conexion.linkedinAppCache # El nombre de nuestra base de datos.
+    c=Conexion()
+    print c.printConnection()
     
     
-    
-
     company= Company()
+    company.setId(1)
+    company.setName("Devspark")
+    company.setLogoUrl("www.devspark.com")
     
+    c.saveCompnay(company)
     
-    
-    company.setId(234)
-    db.Companies.insert({"id":1})
-    
-   
-    j= company.getSerializable()
-    print j
-    db.Companies.find()
+
 
     html = "<html><body>"
 
