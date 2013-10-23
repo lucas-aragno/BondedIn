@@ -4,3 +4,6 @@
 linkedinapp/*.pyc
 BondedIn/local_settings.py
 .idea
+.metadata/*
+.project
+.pydevproject

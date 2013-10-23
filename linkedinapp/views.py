@@ -6,6 +6,8 @@ import time
 import re
 import urllib
 import logging
+import pickle
+
 
 from cache.Company import Company
 
@@ -18,9 +20,16 @@ from django.conf import settings
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
 from linkedinapp.models import *
+
 from django.contrib.auth.decorators import login_required
 from django.core import serializers
 from django.conf.urls.static import static
+from pymongo import *
+from cStringIO import StringIO
+
+
+from linkedinapp.Company import Company
+from linkedinapp.JsonSerializable import JsonSerializable
 
 import sys, traceback
 
@@ -75,16 +84,33 @@ def test(request):
     logger = logging.getLogger('BondedIn.linkedinapp.test')
     logger.debug("Called function test")
 
+
+
+    
+    print "Conectando al Servidor de Base de Datos Local..."
+    conexion = Connection() # Se crea la conexion con la base de datos de mongo, en este caso se usa la url
+    db = conexion.linkedinAppCache # El nombre de nuestra base de datos.
+    
+    
+    
+
+    company= Company()
+    
+    
+    
+    company.setId(234)
+    db.Companies.insert({"id":1})
+   
+    print company.getSerialize()
+    print db.Companies.find()
+
     html = "<html><body>"
-    company = Company()
-    company.setName('Martin Pascal')
-
-    html += company.getName()
-
-
-
 
     return HttpResponse(html)
+
+
+
+
 
 def province_list(request, country):
     logger = logging.getLogger('BondedIn.linkedinapp')
