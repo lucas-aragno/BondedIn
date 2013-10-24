@@ -9,8 +9,10 @@ import logging
 import pickle
 
 
-from cache.Company import Company
-from cache.Conexion import  Conexion
+from cache.Company import *
+from cache.Person import *
+from cache.Location import *
+from cache.MongoConnection import  *
 
 
 # Django
@@ -86,7 +88,7 @@ def test(request):
     logger = logging.getLogger('BondedIn.linkedinapp.test')
     logger.debug("Called function test")
 
-    c=Conexion()
+    c=MongoConnection()
     print c.printConnection()
     
     
@@ -97,7 +99,7 @@ def test(request):
     
     #c.saveCompnay(company)
 
-    company.setName("Globant")
+    company.setName("Intercomgi")
     c.save(company)
 
     

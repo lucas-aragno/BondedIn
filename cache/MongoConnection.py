@@ -2,7 +2,7 @@ from ConnectionFactory import *
 
 from django.core import serializers
 import json
-class Conexion:
+class MongoConnection:
     
     factory = ConnectionFactory()
     
