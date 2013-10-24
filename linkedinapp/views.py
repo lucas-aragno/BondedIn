@@ -179,10 +179,11 @@ def format_name(name):
 def get_company_location(person, locations, client, token, headers, request):
     logger = logging.getLogger('BondedIn.linkedinapp')
     logger.debug("Called function get_company_location con person: " + person['firstName'] + " " + person['lastName'])
+    result = None
     # Se ignoran los person que no tienen positions o values
     if ('positions' not in person) or ('values' not in person['positions']) :
         logger.debug(person['firstName'] + " " + person['lastName'] + "Se ignora por no tener positions o values")
-        return None
+        return result
     company_name = person['positions']['values'][0]['company']['name']
     resp2,content = company_search(request, client, token, headers, format_name(company_name))
     #print resp2,content
@@ -191,7 +192,7 @@ def get_company_location(person, locations, client, token, headers, request):
     # Si la company no tiene location retorno false
     if 'locations' not in company:
         logger.debug(company_name + " no tiene location retorno false")
-        return None
+        return result
     
     for location in company['locations']['values']:
         #print location
@@ -206,11 +207,13 @@ def get_company_location(person, locations, client, token, headers, request):
             if not any(format_name(location['address']['city'].lower()) in s.lower() for s in locations[province[0]]):
                 logger.debug("No city in locations[province[0]]")
                 continue
-            return location['address']['city']
+            result = {"companyName":company_name, "location":location['address']['city']}
+            break
         if location['address']['city'] in province_by_city:
-            return location['address']['city']
+            result = {"companyName":company_name, "location":location['address']['city']}
+            break
 
-    return None
+    return result
 
 
 def get_developers_by_location(locations,profile,request,client,token,headers):
@@ -222,8 +225,9 @@ def get_developers_by_location(locations,profile,request,client,token,headers):
         
         if company_location != None:
             del person['positions']
-            person['location'] = company_location
-            person['province'] = province_by_city[company_location]
+            person['company'] = company_location['companyName']
+            person['city'] = company_location['location']
+            person['province'] = province_by_city[company_location['location']]
             developer_list.append(person)
         else:
             logger.debug("company_location is None")
