@@ -223,6 +223,7 @@ def get_developers_by_location(locations,profile,request,client,token,headers):
         if company_location != None:
             del person['positions']
             person['location'] = company_location
+            person['province'] = province_by_city[company_location]
             developer_list.append(person)
         else:
             logger.debug("company_location is None")
