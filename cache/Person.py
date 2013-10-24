@@ -1,22 +1,9 @@
+from Collection import *
 
-class Person:
-    id
-    firstName
-    lastName
-    locationName
-    locationCode 
-    emailAddress
-    skills
-    educations
-    dateOfBirth
-    phoneNumbers
-    mainAddress
-    primaryTwitterAccount
-    pictureUrl
-    publicProfileUrl
-
+class Person(Collection):
    
-    
+    def __init__(self):
+        self.collection = 'Person'
     
     def getId(self):
         return id

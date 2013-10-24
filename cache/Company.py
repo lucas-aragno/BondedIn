@@ -1,10 +1,12 @@
 
 from pymongo import *
+from Collection import *
 # Clase que representa la compania
 
-class Company:
+class Company(Collection):
    
-
+    def __init__(self):
+        self.collection = 'Companies'
         
     def getId(self):
         return self.id

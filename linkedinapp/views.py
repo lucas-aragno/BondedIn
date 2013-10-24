@@ -95,7 +95,11 @@ def test(request):
     company.setName("Devspark")
     company.setLogoUrl("www.devspark.com")
     
-    c.saveCompnay(company)
+    #c.saveCompnay(company)
+
+    company.setName("Globant")
+    c.save(company)
+
     
 
 

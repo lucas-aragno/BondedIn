@@ -1,13 +1,10 @@
-from pymongo import *
+from ConnectionFactory import *
 
 from django.core import serializers
 import json
 class Conexion:
     
-    
-    print "Conectando al Servidor de Base de Datos Local..."
-    conexion = Connection() # Se crea la conexion con la base de datos de mongo, en este caso se usa la url
-    db = conexion.linkedinAppCache # El nombre de nuestra base de datos.
+    factory = ConnectionFactory()
     
     def saveCompnay(self, company):
         self.db.Companies.insert(company.__dict__)
@@ -17,7 +14,10 @@ class Conexion:
         
     def saveLocation(self,location):
         self.db.Locations.insert(location.__dict__)
-        
+
+    def save(self, Object):
+        coll = self.factory.getCollection(Object)
+        coll.insert(Object.__dict__)
         
     def printConnection(self):
         print "base de datos"

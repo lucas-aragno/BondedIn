@@ -1,16 +1,9 @@
+from Collection import *
 
-class Location:
-    description
-    isHeadquarters
-    isActive
-    addressStreet1
-    addressStreet2
-    addressCity
-    addressState
-    addressPostalCode
-    addressCountryCode
-    addressRegionCode
+class Location(Collection):
     
+    def __init__(self):
+        self.collection = 'Location'
 
     def getDescription(self):
         return self.description
