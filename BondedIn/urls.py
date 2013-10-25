@@ -28,4 +28,5 @@ urlpatterns = patterns('',
     url(r'^list/(?P<skill>\S+)/(?P<province_id>\d+)/(?P<city_name>\S+)$','linkedinapp.views.list'),
     url(r'^list/(?P<skill>\S+)/(?P<province_id>\d+)$','linkedinapp.views.list'),
     url(r'^list/(?P<skill>\S+)$','linkedinapp.views.list'),
+    url(r'^listnew/(?P<skill>\S+)$','linkedinapp.views.list_new'),
 )

@@ -5,13 +5,13 @@ class ConnectionFactory:
     conexion = Connection() # Se crea la conexion con la base de datos de mongo, en este caso se usa la url
     db = conexion.linkedinAppCache # El nombre de nuestra base de datos.
 
-    def getCollection(self, entity):
+    def getCollection(self, collectionName):
 
-        if entity.getCollectionName() == 'Companies':
+        if collectionName == 'Companies':
             return self.db.Companies
-        elif entity.getCollectionName() == 'Person':
+        elif collectionName == 'Person':
             return self.db.Person
-        elif entity.getCollectionName() == 'Location':
+        elif collectionName == 'Location':
             return self.db.Location
         else:
             return None

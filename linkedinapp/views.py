@@ -33,7 +33,7 @@ from cStringIO import StringIO
 
 from cache.Company import Company
 
-
+from bson import json_util
 
 import sys, traceback
 
@@ -47,6 +47,10 @@ client = oauth.Client(consumer)
 request_token_url = 'https://api.linkedin.com/uas/oauth/requestToken'
 access_token_url = 'https://api.linkedin.com/uas/oauth/accessToken'
 authenticate_url = 'https://www.linkedin.com/uas/oauth/authenticate'
+
+province_by_city = {}
+city_by_province = {}
+connection = MongoConnection()
 
 def get_oauth_url(request):
     logger = logging.getLogger('BondedIn.linkedinapp')
@@ -186,8 +190,13 @@ def get_company_location(person, locations, client, token, headers, request):
         return result
     company_name = person['positions']['values'][0]['company']['name']
     resp2,content = company_search(request, client, token, headers, format_name(company_name))
-    #print resp2,content
+
     company = json.loads(content)
+
+    if resp2["status"] != '200':
+        print resp2
+        logger.error("company_search: " + company["message"])
+
 
     # Si la company no tiene location retorno false
     if 'locations' not in company:
@@ -201,7 +210,7 @@ def get_company_location(person, locations, client, token, headers, request):
             logger.debug("Si city no esta en location sigo con la prox location")
             continue
         # Si se especifica city y no es la que se encuentra en location sigo con la prox location
-        if (locations != None):
+        if locations != None:
             province = locations.keys()
             #print locations[province[0]]
             if not any(format_name(location['address']['city'].lower()) in s.lower() for s in locations[province[0]]):
@@ -216,7 +225,7 @@ def get_company_location(person, locations, client, token, headers, request):
     return result
 
 
-def get_developers_by_location(locations,profile,request,client,token,headers):
+def get_developers_by_location(skill, locations,profile,request,client,token,headers):
     logger = logging.getLogger('BondedIn.linkedinapp')
     logger.debug("Called function get_developers_by_location")
     developer_list = []
@@ -229,13 +238,34 @@ def get_developers_by_location(locations,profile,request,client,token,headers):
             person['city'] = company_location['location']
             person['province'] = province_by_city[company_location['location']]
             developer_list.append(person)
+
+            """
+            Este codigo lo usamos temporalmente para poblar la BBDD Mongo
+
+            location = Location()
+            location.setAddressCity(company_location['location'])
+
+            company = Company()
+            company.setName(company_location['companyName'])
+            company.setLocations(location.__dict__)
+
+            people = Person()
+            people.setFirstName(person["firstName"])
+            people.setLastName(person["lastName"])
+            people.addSkill(skill)
+            if "pictureUrl" in person:
+                people.setPictureUrl(person["pictureUrl"])
+            people.setPublicProfileUrl(person["publicProfileUrl"])
+            people.setCompany(company.__dict__)
+
+            connection.save(people)
+            """
+
         else:
             logger.debug("company_location is None")
 
     return developer_list
 
-province_by_city = {}
-city_by_province = {}
 @login_required
 def list(request, skill, province_id=None, city_name=None):
     logger = logging.getLogger('BondedIn.linkedinapp')
@@ -264,11 +294,25 @@ def list(request, skill, province_id=None, city_name=None):
     else:
         city_by_province = None
 
-    people = get_developers_by_location(city_by_province, content, request, client, token, headers)
+    people = get_developers_by_location(skill, city_by_province, content, request, client, token, headers)
     if people != None:
         html = json.dumps(people)
 
     return HttpResponse(html, content_type="application/json")
+
+def list_new(request, skill, province_id=None, city_name=None):
+    logger = logging.getLogger('BondedIn.linkedinapp')
+    logger.debug("Called function list con skill: " + str(skill) + " province_id: " + str(province_id) + " city_name: " + str(city_name))
+    now = datetime.datetime.now()
+    headers = {'x-li-format':'json'}
+
+    cursor = connection.find('Person', None)
+
+    json_docs = [json.dumps(doc, default=json_util.default) for doc in cursor]
+
+    return HttpResponse(json_docs, content_type="application/json")
+
+
 
 @login_required
 def oauth_logout(request):

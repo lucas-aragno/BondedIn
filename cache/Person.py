@@ -4,88 +4,97 @@ class Person(Collection):
    
     def __init__(self):
         self.collection = 'Person'
+        self.skills = []
     
     def getId(self):
-        return id
+        return self.id
         
     def setId(self,id):
-        self.id= id
-        
+        self.id = id
     
     def getFirstName(self):
-        return first-name
+        return self.firstName
     
-    def setFirstName(self,firstName):
-        self.firstName= firstName
+    def setFirstName(self, firstName):
+        self.firstName = firstName
         
     def getLastName(self):
-        return lastName
+        return self.lastName
     
     def setLastName(self, lastName):
-        self.lastName= lastName
+        self.lastName = lastName
         
     def getLocationName(self):
-        return locationName
+        return self.locationName
     
     def setLocationName(self, locationName):
         self.locationName = locationName
         
     def getLocationCode(self):
-        return locationCode
+        return self.locationCode
     
     def setLocationCode(self, locationCode):
-        this.locationCode=locationCode
+        self.locationCode = locationCode
         
     def getEmailAddress(self):
-        return  emailAddress
+        return  self.emailAddress
     
-    def sertEmailAddress(self,emailAddress):
-        this.emailAddress=emailAddress
+    def sertEmailAddress(self, emailAddress):
+        self.emailAddress = emailAddress
         
     def getSkills(self):
-        return skills
+        return self.skills
     
-    def setSkills(self,skill):
-        this.skills =skill
+    def setSkills(self, skill):
+        self.skills = skill
+        
+    def addSkill(self, skill):
+        self.skills.append(skill)
         
     def getEducations(self):
-        return educations
+        return self.educations
     
-    def setEducation(self, education):
-        this.education
+    def setEducations(self, educations):
+        self.educations = educations
         
     def getDateOfBirth(self):
-        return dateOfBirth
+        return self.dateOfBirth
     
     def setDateOdBirth(self, date):
-        this.dateOfBirth= date
+        self.dateOfBirth = date
         
-    def getPhoneNumber(self):
-        return phoneNumbers
+    def getPhoneNumbers(self):
+        return self.phoneNumbers
     
     def setPhoneNumbers(self, phone):
-        this.phoneNumbers=phone
+        self.phoneNumbers = phone
         
     def getMainAdress(self):
-        return mainAddress
+        return self.mainAddress
     
     def setMainAddress(self, address):
-        this.mainAddress=address
+        self.mainAddress = address
         
     def getTwitterAccount(self):
-        return primaryTwitterAccount
+        return self.primaryTwitterAccount
         
     def setTwitterAccount(self, account):    
-        this.primaryTwitterAccount=account
+        self.primaryTwitterAccount = account
         
     def getPictureUrl(self):
-        return pictureUrl
+        return self.pictureUrl
     
     def setPictureUrl(self, picture):
-        this.pictureUrl=picture
+        self.pictureUrl = picture
         
     def getPublicProfileUrl(self):
-        return publicProfileUrl
+        return self.publicProfileUrl
     
     def setPublicProfileUrl(self, urlProfile):
-        this.publicProfileUrl=urlProfile
+        self.publicProfileUrl = urlProfile
+        
+    def getCompany(self):
+        return self.company
+    
+    def setCompany(self, company):
+        self.company = company
