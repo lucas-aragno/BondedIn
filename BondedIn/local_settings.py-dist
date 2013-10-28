@@ -11,4 +11,5 @@ MYSQL_PORT = ''
 TOKEN='foji5h6xotaz'
 SECRET='p3t1ih9fTylOI4LS'
 
-
+# Project Path
+PROJECT_PATH = ''
